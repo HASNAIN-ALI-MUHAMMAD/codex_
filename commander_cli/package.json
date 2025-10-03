@@ -2,14 +2,15 @@
   "name": "commander_cli",
   "version": "1.0.0",
   "description": "CLI coding agent!",
-  "main": "index.js",
+  "main": "dist/src/index.js",
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
     "build:watch": "tsc --watch",
-    "dev:ready": "nodemon --watch dist --delay 500ms --exec \"node dist/src/index.js\"",
+    "dev:ready": "nodemon --watch dist --delay 500ms",
     "dev": "concurrently \"npm run build:watch\" \"npm run dev:ready\"",
     "codex": "node dist/src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "file": "node"
   },
   "bin": {
     "codex": "dist/index.js"
@@ -19,7 +20,7 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
-    "@types/node": "^24.3.1",
+    "@types/node": "^24.6.1",
     "concurrently": "^9.2.1",
     "nodemon": "^3.1.10",
     "shx": "^0.4.0",

@@ -1,9 +1,9 @@
 import { Command } from "commander";
-import { FileSystem } from "../../FileSystem/index.js";
-import { READDIR } from "../../FileSystem/@types/FileSystem.js";
+import { FileSystem } from "../../src2/filesystem/index.js";
+import { READDIR } from "../@types/files.js";
 
 const programStart = new Command("start");
-const FS  = new FileSystem();
+
 programStart
   .description("Start the application")
   .action(() => {

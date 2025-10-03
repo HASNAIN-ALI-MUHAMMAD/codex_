@@ -3,9 +3,9 @@
     "module": "nodenext",
     "target": "ES2022",
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDirs": ["src","src2"],
     "esModuleInterop": true,
     "moduleResolution": "NodeNext"
   },
-  "include": ["src","FileSystem"]
+  "include": ["src","src2"]
 }

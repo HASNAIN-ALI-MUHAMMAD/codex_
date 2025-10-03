@@ -1,0 +1,8 @@
+{
+    "workbench.colorTheme": "Kimbie Dark",
+    "workbench.iconTheme": "vs-seti",
+    "window.autoDetectColorScheme": false,
+    "editor.tabSize": 6,
+    "editor.autoIndent": "advanced",
+    "editor.foldingStrategy": "indentation"
+}

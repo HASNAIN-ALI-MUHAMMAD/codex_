@@ -10,3 +10,4 @@ express_backend/.env
 express_backend/package-lock.json
 
 
+.gitignore

@@ -14,8 +14,3 @@ export type READDIRDIR = {
 }
 export type READDIR = READDIRFILE | READDIRDIR
 
-
-export type FILESDATATYPE = {
-  absPath:string,
-  data:string
-}

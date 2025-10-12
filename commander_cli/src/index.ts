@@ -1,5 +1,8 @@
 import { Command } from "commander";
 import programStart from "./start/index.js";
+import { Project } from "../src2/project/index.js";
+
+const pr = Project.start("testing");
 
 const program = new Command();
 

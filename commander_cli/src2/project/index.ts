@@ -1,5 +1,6 @@
 import { FileSystemMethods } from "../helpers/filesystem.js";
-import { ProjectObject } from "../@types/projects.js";
+import { ProjectObject, ProjectType } from "../@types/projects.js";
+import { ProjectInitializer } from "../initializer/index.js";
 
 export class Project{
       private prPath:string;
@@ -11,8 +12,19 @@ export class Project{
             this.prObject = project;
             this.fssMethods = new FileSystemMethods(prj_path); 
       }
+
+      static start(project:string,type:ProjectType):Project{
+            const fssss = new ProjectInitializer(project);
+            return fssss.initializeProject(type);
+      }
+
+
+
+      getWorkingTree(){}
       checkHistory(){}
       checkStatus(){}
       restoreHistory(){}
       // etc...
 }
+
+

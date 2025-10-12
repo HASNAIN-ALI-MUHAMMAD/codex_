@@ -1,30 +1,97 @@
-import {spawn,exec} from "node:child_process"
-import { SANDBOX_DIR } from "../helpers/config_var_fs.js";
+import { spawn, exec, execFile, execSync } from "node:child_process"
+import { FileSystemMethods } from "../helpers/filesystem.js";
+import { execCommandOutput } from "../@types/codecli.js";
+import { clear } from "node:console";
+import { hasUncaughtExceptionCaptureCallback } from "node:process";
+
+const platform = process.platform === "win32" ? "powershell.exe" : "bash"
 
 
-const platform = process.platform === "win32" ? "powershell.exe" :"bash"
-const cli = spawn(platform,{
-  cwd:SANDBOX_DIR,
-  
-})
 
-cli.stdout.on('data', (data) => {
-  // console.log(`[Shell Output]: ${data}`);
-  return data
-});
+export class Cli {
+  private platform: string;
+  constructor() {
+    this.platform = process.platform === "win32" ? "powershell.exe" : "bash";
+  }
 
-// Listen for errors
-cli.stderr.on('data', (data) => {
-  console.error(`[Shell Error]: ${data}`);
-});
+  execCommand(cmd: string, cwd: string): Promise<execCommandOutput> | execCommandOutput {
+    try {
+      // if (FileSystemMethods.safeDirParse(cwd)) {
+      return new Promise((resolve, reject) =>
+        exec(cmd, { cwd: cwd, shell: this.platform }, (err, stdout, stderr) => {
+          if (err) {
+            reject({
+              type: "error",
+              data: err,
+              datetime: Date.now()
+            } as unknown as execCommandOutput);
+            return;
+          }
+          else if (stderr) {
+            reject({
+              type: "error",
+              data: stderr,
+              datetime: Date.now()
+            } as unknown as execCommandOutput)
+            return;
+          }
+          //          else if (stdout) {
+          resolve({
+            type: "success",
+            data: stdout,
+            datetime: Date.now()
+          } as unknown as execCommandOutput);
+          return;
+          // }
+          // else {
+          //   resolve({ type: "failure", data: err, date: Date.now() } as unknown as execCommandOutput)
+          //   return;
+          // }
+        }));
+    }
+    // }
+    catch (error) {
+      return {
+        type: "failure",
+        data: error,
+        datetime: Date.now()
+      }
+    }
+  }
 
-// Write a command to the shell's standard input
-function sendCommand(command) {
-  cli.stdin.write(command + '\n');
+  async execCommands(cmds: string[], cwd: string): Promise<execCommandOutput | execCommandOutput[]> {
+    try {
+      let res: execCommandOutput[];
+      const promises = cmds.map(cmd => this.execCommand(cmd, cwd));
+      const results = await Promise.all(promises);
+      res = results;
+      return res;
+    } catch (error) {
+      return {
+        type: "failure",
+        data: error,
+        datetime: Date.now()
+      }
+    }
+  }
+
+
 }
 
 
-const Output = sendCommand('npm --version'); 
-console.log(Output)
+// running test commands
+//
+// const cd = new Cli();
+// // const data = await cd.execCommand("node dist/src2/initializer/index.j", process.cwd());
+// // console.log(data);
+// const res = await cd.execCommands(["ls -la", "node -v", "npm -v"], process.cwd())
+//
+// console.log(res)
 
-cli.stdin.end()
+
+
+
+
+
+
+

@@ -7,8 +7,8 @@ import { SANDBOX_DIR } from "./config_var_fs.js";
 import { SANDBOX_DIR_PROJECTS } from "./config_var_fs.js";
 
 export class FileSystemMethods {
-  sdDir: string;
-  toFilterDirs = ["node_modules", ".dist", "dist", "private", "public", ".vscode"];
+  private sdDir: string;
+  private toFilterDirs = ["node_modules", ".dist", "dist", "private", "public", ".vscode"];
 
   constructor(sdDir: string) {
     if (!FileSystemMethods.safeDirParse(sdDir)) {
@@ -54,7 +54,7 @@ export class FileSystemMethods {
   }
 
   // filters the files for the tree
-  async filterFiles(dirsData: READDIR[]): Promise<READDIRFILE[]> {
+  private async filterFiles(dirsData: READDIR[]): Promise<READDIRFILE[]> {
     const files: READDIRFILE[] = [];
 
     for (const f of dirsData) {
@@ -68,6 +68,20 @@ export class FileSystemMethods {
     return files;
   }
 
+  // reads all filtered files and adds the string format file data to the object
+  // private and used in the class for the readDir method
+  private async readFilesDir(arrFiles: READDIRFILE[]) {
+    const ext = (filename: string) => {
+      return filename.split('.').at(-1)
+    }
+    const filesRead = Promise.all(arrFiles.map(async (u) => ({
+      ...u,
+      fileType: ext(u.name),
+      data: await this.readFile(u.absPath)
+    })))
+    return filesRead
+  }
+
   // individual file reader
   async readFile(pathname: string): Promise<string> {
     try {
@@ -77,21 +91,26 @@ export class FileSystemMethods {
       throw error
     }
   }
-
-  // reads all filtered files and adds the string format file data
-  async readFiles(arrFiles: READDIRFILE[]) {
-    const ext = (filename: string) => {
-      return filename.split('.').at(-1)
-    }
-
-    const filesRead = Promise.all(arrFiles.map(async (u) => ({
-      ...u,
-      fileType: ext(u.name),
-      data: await this.readFile(u.absPath)
-    })))
-    return filesRead
+  // creates a file at the given path
+  async createFile(filename:string,path:string){
+    if(FileSystemMethods.safeDirParse(path)){
+      if(existsSync(path)){
+        return {
+          filename:filename,
+          path:path,
+          status:"file_exists"
+        }
+      }
+      await fs.writeFile(path,"");
+      return {
+        filname:filename,
+        file_path:path,
+        status:"new_file"
+      }
+    }    
   }
 
+  // creating a directory
   async createDir(path: string) {
     if (!existsSync(path)) {
       mkdirSync(path)
@@ -100,7 +119,7 @@ export class FileSystemMethods {
     return true
   }
 
-
+  //static method for safe directory usage
   static safeDirParse(pr_path: string): boolean {
     if (!pr_path.startsWith(SANDBOX_DIR_PROJECTS, 0)) {
       throw new Error("Access denied!")
@@ -110,16 +129,4 @@ export class FileSystemMethods {
 
 }
 
-if (process.argv[1] === new URL(import.meta.url).pathname) {
-
-  const fssm = new FileSystemMethods(path.join(os.homedir(), "D"))
-
-  const dirs = await fssm.readDir("code/js/codex/codex_/commander_cli")
-  const filtered = await fssm.filterFiles(dirs)
-  const sampleData = await fssm.readFile(filtered[0].absPath)
-  const readall = await fssm.readFiles(filtered)
-  console.log("DIRS: ", dirs)
-  console.log("FILTERED DIRS: ", filtered)
-  console.log("READ A SAMPLE FILE: ", sampleData)
-  console.log("READ ALL FILES: ", readall)
-}
+if (process.argv[1] === new URL(import.meta.url).pathname){}

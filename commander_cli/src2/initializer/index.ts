@@ -15,7 +15,6 @@ export class ProjectInitializer {
   private projectPath: string
 
   constructor(project: string) {
-
     this.SANDBOXPATH = SANDBOX_DIR_PROJECTS;
     this.projectPath = path.join(this.SANDBOXPATH, project);
     const fssMethods = new FileSystemMethods(this.projectPath);
@@ -25,9 +24,9 @@ export class ProjectInitializer {
     }
   }
 
-  initializeProject(type: ProjectType): Project {
-    if (!this.fssMethods.createDir(this.projectPath)) {
-      console.log("Project created at ", this.projectPath);
+  async initializeProject(type: ProjectType): Promise<Project> {
+    if (!(await this.fssMethods.createDir(this.projectPath))) {
+      console.log("Creating new project at: ", this.projectPath);
       return new Project(this.projectPath, {
         path: this.projectPath,
         status: "new",
@@ -44,7 +43,10 @@ export class ProjectInitializer {
   execProjectType(type: ProjectType): boolean {
     const cl = new Cli();
     try {
-    } catch (error) {
+      
+    }
+    catch (error) {
+      
     }
     return true;
   }

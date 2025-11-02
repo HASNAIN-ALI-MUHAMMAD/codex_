@@ -2,7 +2,6 @@ import { spawn, exec, execFile, execSync } from "node:child_process"
 import { FileSystemMethods } from "../helpers/filesystem.js";
 import { execCommandOutput } from "../@types/codecli.js";
 import { clear } from "node:console";
-import { hasUncaughtExceptionCaptureCallback } from "node:process";
 
 const platform = process.platform === "win32" ? "powershell.exe" : "bash"
 
@@ -75,17 +74,16 @@ export class Cli {
     }
   }
 
-
 }
 
 
-// running test commands
-//
+// running test commands dev
+
 // const cd = new Cli();
 // // const data = await cd.execCommand("node dist/src2/initializer/index.j", process.cwd());
 // // console.log(data);
 // const res = await cd.execCommands(["ls -la", "node -v", "npm -v"], process.cwd())
-//
+
 // console.log(res)
 
 

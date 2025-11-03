@@ -53,7 +53,8 @@ export class Project{
       async readFile(filename:string){
             const filepath = path.join(this.prPath,filename);
             const filedata = this.fssMethods.readFile(filepath);
-            //return a astructured res with filename,path and string format utf8 data
+            
+            //return a a structured res with filename,path and string format utf8 data
       }
 
       checkHistory(){}
@@ -61,7 +62,6 @@ export class Project{
       restoreHistory(){}
       // etc...
 }
-
 
 
 const pr = await Project.Start("test","nextjs")

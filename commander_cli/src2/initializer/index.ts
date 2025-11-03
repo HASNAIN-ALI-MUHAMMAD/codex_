@@ -40,30 +40,6 @@ export class ProjectInitializer {
     })
   }
 
-  execProjectType(type: ProjectType): boolean {
-    const cl = new Cli();
-    try {
-      
-    }
-    catch (error) {
-      
-    }
-    return true;
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 console.log("hello from node!");
